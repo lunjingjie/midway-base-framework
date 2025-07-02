@@ -9,11 +9,14 @@ import { FormatMiddleware } from './middleware/format.middle';
 import { ValidateErrorFilter } from './filter/validate.filter';
 import { NotFoundFilter } from './filter/notfound.filter';
 import * as swagger from '@midwayjs/swagger';
+import { JwtMiddleware } from './middleware/jwt.middleware';
+import * as typeorm from '@midwayjs/typeorm';
 
 @Configuration({
   imports: [
     koa,
     validate,
+    typeorm,
     {
       component: swagger,
       enabledEnvironment: ['local'],
@@ -31,12 +34,8 @@ export class MainConfiguration {
 
   async onReady() {
     // add middleware
-    this.app.useMiddleware([ReportMiddleware, FormatMiddleware]);
+    this.app.useMiddleware([ReportMiddleware, FormatMiddleware, JwtMiddleware]);
     // add filter
-    this.app.useFilter([
-      ValidateErrorFilter,
-      NotFoundFilter,
-      DefaultErrorFilter,
-    ]);
+    this.app.useFilter([ValidateErrorFilter, NotFoundFilter, DefaultErrorFilter]);
   }
 }

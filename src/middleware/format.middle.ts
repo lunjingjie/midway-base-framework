@@ -13,12 +13,7 @@ export class FormatMiddleware implements IMiddleware<Context, NextFunction> {
     return async (ctx: Context, next: NextFunction) => {
       const result = await next();
       // 如果控制器已经返回了完整的响应格式，则直接返回
-      if (
-        result &&
-        'code' in result &&
-        'data' in result &&
-        'message' in result
-      ) {
+      if (result && 'code' in result && 'data' in result && 'message' in result) {
         return result;
       }
       // 否则包装为标准响应格式
