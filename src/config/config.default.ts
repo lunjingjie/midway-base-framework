@@ -11,11 +11,11 @@ export default {
     dataSource: {
       default: {
         type: 'mysql',
-        host: '106.53.172.127',
+        host: 'localhost',
         port: 3306,
         username: 'root',
-        password: 'Zxjc321.',
-        database: 'midway_admin',
+        password: '',
+        database: '',
         synchronize: true, // 开发环境下使用，生产环境建议关闭
         logging: true,
         entities: ['**/entity/*.entity{.ts,.js}'],
