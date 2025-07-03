@@ -15,7 +15,7 @@ export class WeatherService {
       `https://midwayjs.org/resource/${cityId}.json`,
       {
         dataType: 'json',
-      }
+      },
     );
 
     if (result.status === 200) {

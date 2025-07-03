@@ -1,16 +1,8 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseEntity } from './base.entity';
 
 @Entity('sys_user')
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class UserEntity extends BaseEntity {
   @Column({ length: 50, unique: true })
   username: string;
 
@@ -31,10 +23,4 @@ export class UserEntity {
 
   @Column({ name: 'role_ids', type: 'simple-json', nullable: true })
   roleIds: number[];
-
-  @CreateDateColumn({ name: 'create_time' })
-  createTime: Date;
-
-  @UpdateDateColumn({ name: 'update_time' })
-  updateTime: Date;
 }

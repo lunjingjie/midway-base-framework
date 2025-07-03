@@ -1,4 +1,5 @@
-import { Config, Provide } from '@midwayjs/core';
+import { Config, Provide, Scope, ScopeEnum } from '@midwayjs/core';
+
 import * as jwt from 'jsonwebtoken';
 import { BaseError } from '../error/base.error';
 
@@ -8,6 +9,7 @@ import { BaseError } from '../error/base.error';
  * @date 2025-07-02
  */
 @Provide()
+@Scope(ScopeEnum.Request, { allowDowngrade: true })
 export class JwtUtil {
   @Config('jwt')
   jwtConfig;

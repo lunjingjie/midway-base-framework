@@ -14,9 +14,9 @@ import * as typeorm from '@midwayjs/typeorm';
 
 @Configuration({
   imports: [
+    typeorm,
     koa,
     validate,
-    typeorm,
     {
       component: swagger,
       enabledEnvironment: ['local'],

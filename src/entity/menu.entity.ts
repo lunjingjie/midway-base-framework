@@ -1,16 +1,8 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseEntity } from './base.entity';
 
 @Entity('sys_menu')
-export class MenuEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class MenuEntity extends BaseEntity {
   @Column({ name: 'parent_id', default: 0 })
   parentId: number;
 
@@ -37,10 +29,4 @@ export class MenuEntity {
 
   @Column({ default: 1 })
   status: number;
-
-  @CreateDateColumn({ name: 'create_time' })
-  createTime: Date;
-
-  @UpdateDateColumn({ name: 'update_time' })
-  updateTime: Date;
 }
