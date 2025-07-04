@@ -1,0 +1,25 @@
+### 测试用户注册
+POST http://localhost:7001/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123",
+  "confirmPassword": "password123",
+  "realName": "测试用户",
+  "email": "test@example.com",
+  "phone": "13800138000"
+}
+
+### 测试用户登录
+POST http://localhost:7001/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+### 获取当前用户信息
+GET http://localhost:7001/api/auth/current-user
+Authorization: Bearer {{token}}

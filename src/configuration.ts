@@ -11,6 +11,7 @@ import { NotFoundFilter } from './filter/notfound.filter';
 import * as swagger from '@midwayjs/swagger';
 import { JwtMiddleware } from './middleware/jwt.middleware';
 import * as typeorm from '@midwayjs/typeorm';
+import { InitService } from './service/init.service';
 
 @Configuration({
   imports: [
@@ -37,5 +38,9 @@ export class MainConfiguration {
     this.app.useMiddleware([ReportMiddleware, FormatMiddleware, JwtMiddleware]);
     // add filter
     this.app.useFilter([ValidateErrorFilter, NotFoundFilter, DefaultErrorFilter]);
+
+    // 初始化系统数据
+    const initService = await this.app.getApplicationContext().getAsync(InitService);
+    await initService.init();
   }
 }

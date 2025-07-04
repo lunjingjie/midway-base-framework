@@ -1,5 +1,7 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { UserRoleEntity } from './user-role.entity';
+import { RoleMenuEntity } from './role-menu.entity';
 
 @Entity('sys_role')
 export class RoleEntity extends BaseEntity {
@@ -14,7 +16,10 @@ export class RoleEntity extends BaseEntity {
 
   @Column({ default: 1 })
   status: number;
-
-  @Column({ name: 'menu_ids', type: 'simple-json', nullable: true })
-  menuIds: number[];
+  
+  @OneToMany(() => UserRoleEntity, userRole => userRole.role)
+  userRoles: UserRoleEntity[];
+  
+  @OneToMany(() => RoleMenuEntity, roleMenu => roleMenu.role)
+  roleMenus: RoleMenuEntity[];
 }

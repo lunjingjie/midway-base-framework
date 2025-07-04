@@ -1,4 +1,4 @@
-import { Inject, Middleware } from '@midwayjs/core';
+import { Inject, Middleware, MidwayWebRouterService } from '@midwayjs/core';
 import { Context, NextFunction } from '@midwayjs/koa';
 import { JwtUtil } from '../utils/jwt.util';
 import { BusinessError } from '../error/base.error';
@@ -9,22 +9,60 @@ export class JwtMiddleware {
   @Inject()
   jwtUtil: JwtUtil;
 
+  @Inject()
+  webRouterService: MidwayWebRouterService;
+
   resolve() {
     return async (ctx: Context, next: NextFunction) => {
+      // 获取当前请求的路由信息
+      const routeInfo = await this.webRouterService.getMatchedRouterInfo(ctx.path, ctx.method);
+
+      // 如果找不到路由信息，继续执行验证
+      if (routeInfo) {
+        const { controllerClz, method } = routeInfo;
+
+        // 检查控制器类上是否有SkipAuth注解
+        const controllerSkipAuth = Reflect.getMetadata('skipAuth', controllerClz);
+        if (controllerSkipAuth) {
+          return next();
+        }
+
+        // 检查方法上是否有SkipAuth注解
+        const methodSkipAuth = Reflect.getMetadata('skipAuth', controllerClz.prototype, method);
+        if (methodSkipAuth) {
+          return next();
+        }
+      }
+
       // 从请求头获取token
-      const token = ctx.get('Authorization');
-      if (!token) {
+      const authHeader = ctx.get('Authorization');
+      if (!authHeader) {
         throw new BusinessError('未授权', ResponseCode.UNAUTHORIZED);
       }
 
-      // 验证token
-      const decoded = this.jwtUtil.verifyToken(token);
-      if (!decoded) {
-        throw new BusinessError('无效的token', ResponseCode.UNAUTHORIZED);
+      // 处理Bearer token格式
+      const parts = authHeader.split(' ');
+      if (parts.length !== 2 || parts[0] !== 'Bearer') {
+        throw new BusinessError('无效的token格式', ResponseCode.UNAUTHORIZED);
       }
 
-      // 将用户信息存储在上下文中
-      ctx.user = decoded;
+      const token = parts[1];
+
+      // 验证token
+      try {
+        const decoded = this.jwtUtil.verifyToken(token);
+        if (!decoded) {
+          throw new BusinessError('无效的token', ResponseCode.UNAUTHORIZED);
+        }
+
+        // 将用户信息存储在上下文中
+        ctx.user = decoded;
+      } catch (error) {
+        if (error instanceof BusinessError) {
+          throw error;
+        }
+        throw new BusinessError('token验证失败', ResponseCode.UNAUTHORIZED);
+      }
 
       return next();
     };

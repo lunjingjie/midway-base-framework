@@ -1,5 +1,6 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { RoleMenuEntity } from './role-menu.entity';
 
 @Entity('sys_menu')
 export class MenuEntity extends BaseEntity {
@@ -29,4 +30,7 @@ export class MenuEntity extends BaseEntity {
 
   @Column({ default: 1 })
   status: number;
+  
+  @OneToMany(() => RoleMenuEntity, roleMenu => roleMenu.menu)
+  roleMenus: RoleMenuEntity[];
 }
